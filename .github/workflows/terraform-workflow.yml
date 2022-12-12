@@ -3,7 +3,7 @@ name: Reusable workflow terraform
 on:
   workflow_call:
 jobs:
-  terraform-plan:
+  terraform:
     runs-on: ubuntu-latest
     steps:
       - name: Terraform Format
