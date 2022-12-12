@@ -1,0 +1,22 @@
+name: Reusable workflow terraform
+
+on:
+  workflow_call:
+    inputs:
+      workdir:
+        required: true
+        type: string
+        default: 'src'
+
+jobs:
+  terraform-plan:
+    runs-on: ubuntu-latest
+    container:
+      image: docker://hashicorp/terraform:1.3.6
+    steps:
+    - run: |
+        cd  ${{ inputs.workdir || 'src' }}
+        echo "Terraform Plan"
+        terraform init
+        terraform plan
+
