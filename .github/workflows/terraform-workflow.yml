@@ -15,7 +15,6 @@ jobs:
       image: docker://hashicorp/terraform:1.3.6
     steps:
     - run: |
-        pwd
         cd ${{ inputs.workdir || 'src' }}
         echo "Terraform Plan"
         terraform init
