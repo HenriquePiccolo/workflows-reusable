@@ -5,6 +5,11 @@ on:
 jobs:
   terraform:
     runs-on: ubuntu-latest
+    env:
+      AWS_ACCESS_KEY_ID: ${{ secrets.aws_access_key_id }}
+      AWS_SECRET_ACCESS_KEY: ${{ secrets.aws_secret_access_key }}
+      AWS_DEFAULT_REGION: ${{ secrets.aws_default_region }}
+      AWS_DEFAULT_OUTPUT: 'json'
     steps:
       - name: Checkout
         uses: actions/checkout@v3
@@ -23,5 +28,14 @@ jobs:
 
       - name: Terraform Plan
         id: plan
+        if: github.event_name == 'pull_request'
         run: terraform plan -no-color -input=false
         continue-on-error: true
+
+      - name: Terraform Plan Status
+        if: steps.plan.outcome == 'failure'
+        run: exit 1
+
+      - name: Terraform Apply
+        if: github.ref == 'refs/heads/main' && github.event_name == 'push'
+        run: terraform apply -auto-approve -input=false
